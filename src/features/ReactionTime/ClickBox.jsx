@@ -4,6 +4,7 @@ const ClickBox = (props) => {
   const [testActive, setTestActive] = useState(false);
   const [isGreen, setIsGreen] = useState(false);
   const [reactionTime, setReactionTime] = useState(null);
+  const [average, setAverage] = useState();
   const startTime = useRef(null);
   const timeoutId = useRef(null);
   const results = useRef([]);
@@ -21,6 +22,7 @@ const ClickBox = (props) => {
         <h3 className="text-5xl mb-8">
           {reactionTime ? `You reacted in ${reactionTime}ms` : 'Reaction time test'}
         </h3>
+        <p className="text-2xl">{average && `Your average reaction time was ${average}ms`}</p>
         <p className="text-xl">
           {reactionTime
             ? 'Click to try again'
@@ -49,8 +51,16 @@ const ClickBox = (props) => {
       setTestActive(!testActive);
       setIsGreen(false);
       results.current.push(rt);
-      console.log(results.current);
+      if (results.current.length >= 5) {
+        handleSessionComplete();
+      }
     }
+  };
+
+  const handleSessionComplete = () => {
+    const total = results.current.reduce((sum, result) => sum + result, 0);
+    const avg = Math.floor(total / results.current.length);
+    setAverage(avg);
   };
 
   return (
