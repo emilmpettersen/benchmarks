@@ -1,13 +1,20 @@
 import { useRef, useState } from 'react';
+import Button from '../../ui/Button';
+import { useNavigate } from 'react-router';
+import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
 
-const ClickBox = (props) => {
+const ClickBox = () => {
   const [testActive, setTestActive] = useState(false);
   const [isGreen, setIsGreen] = useState(false);
   const [reactionTime, setReactionTime] = useState(null);
+  const [redClick, setRedClick] = useState(false);
   const [average, setAverage] = useState();
+  const [sessionComplete, setSessionComplete] = useState(false);
   const startTime = useRef(null);
   const timeoutId = useRef(null);
   const results = useRef([]);
+  const navigate = useNavigate();
+  const [reactionHistory, addResult, clearHistory] = useLocalStorageArray('reactionTime');
 
   const getBoxClass = () => {
     if (!testActive) return 'bg-blue-500';
@@ -15,19 +22,43 @@ const ClickBox = (props) => {
     return 'bg-red-600';
   };
 
+  const saveScore = () => {
+    addResult(average);
+    navigate('/dashboard');
+  };
+
+  let heading, subtext, actionArea;
+
+  if (sessionComplete) {
+    heading = `${average}ms`;
+    subtext = 'Save your score or try again!';
+    actionArea = (
+      <div className="flex gap-4 justify-center mt-8">
+        <Button handleClick={saveScore}>Save score</Button>
+        <Button>Try again</Button>
+      </div>
+    );
+  } else if (redClick) {
+    heading = 'Too fast!';
+    subtext = 'Wait for green. Click to try again.';
+    actionArea = null;
+  } else if (reactionTime) {
+    heading = `${reactionTime}ms`;
+    subtext = 'Click to try again';
+    actionArea = null;
+  } else {
+    heading = 'Reaction time test';
+    subtext = 'Click as fast as possible when this box turns green. Click anywhere to start';
+    actionArea = null;
+  }
+
   let boxContent;
   if (!testActive) {
     boxContent = (
       <div className="text-center">
-        <h3 className="text-5xl mb-8">
-          {reactionTime ? `You reacted in ${reactionTime}ms` : 'Reaction time test'}
-        </h3>
-        <p className="text-2xl">{average && `Your average reaction time was ${average}ms`}</p>
-        <p className="text-xl">
-          {reactionTime
-            ? 'Click to try again'
-            : 'Click as fast as possible when this box turns green. Click anywhere to start'}
-        </p>
+        <h3 className="text-5xl mb-8">{heading}</h3>
+        <p className="text-2xl">{subtext}</p>
+        {actionArea && actionArea}
       </div>
     );
   } else if (isGreen) {
@@ -37,7 +68,8 @@ const ClickBox = (props) => {
   }
 
   const handleBoxClick = () => {
-    if (!testActive) {
+    if (!testActive || redClick) {
+      setRedClick(false);
       setTestActive(!testActive);
       const delay = Math.random() * 5000 + 1000;
       timeoutId.current = setTimeout(() => {
@@ -55,17 +87,23 @@ const ClickBox = (props) => {
         handleSessionComplete();
       }
     }
+    if (testActive && !isGreen) {
+      setTestActive(!testActive);
+      clearTimeout(timeoutId.current);
+      setRedClick(true);
+    }
   };
 
   const handleSessionComplete = () => {
     const total = results.current.reduce((sum, result) => sum + result, 0);
     const avg = Math.floor(total / results.current.length);
     setAverage(avg);
+    setSessionComplete(true);
   };
 
   return (
     <div
-      onClick={handleBoxClick}
+      onClick={sessionComplete ? undefined : handleBoxClick}
       className={`h-[70dvh] ${getBoxClass()} flex justify-center items-center`}
     >
       {boxContent}
