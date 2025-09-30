@@ -1,11 +1,8 @@
-import React from "react"
+import React from 'react';
+import AimArea from './AimArea';
 
 const MouseAim = (props) => {
-  return (
-    <div>
-      MouseAim
-    </div>
-  )
+  return <AimArea></AimArea>;
 };
 
 export default MouseAim;
