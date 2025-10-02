@@ -5,8 +5,11 @@ import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
 import { useNavigate } from 'react-router';
 
 const getRandomPosition = () => {
-  const x = Math.round(Math.random() * 800);
-  const y = Math.round(Math.random() * 450);
+  const horizontalMax = 800;
+  const verticalMax = 450;
+
+  const x = Math.round(Math.random() * horizontalMax);
+  const y = Math.round(Math.random() * verticalMax);
   return { x, y };
 };
 
@@ -49,7 +52,7 @@ const AimArea = () => {
 
   return (
     <div
-      className={`flex justify-center w-full h-[80dvh] bg-slate-400 flex-col text-center ${!isActive && 'items-center'} `}
+      className={`flex justify-center w-full h-[80dvh] bg-slate-400 flex-col text-center ${!isActive ? 'items-center' : ''} `}
     >
       {isActive ? (
         <>
