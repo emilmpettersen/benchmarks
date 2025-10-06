@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import Target from './Target';
 import Button from '../../ui/Button';
 import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
-import { useNavigate } from 'react-router';
+import TestFinished from '../../components/TestFinished';
 
 const getRandomPosition = () => {
   const horizontalMax = 800;
@@ -21,7 +21,6 @@ const AimArea = () => {
   const startTime = useRef(null);
   const totalTargets = 30;
   const [aimHistory, addResult, clearHistory] = useLocalStorageArray('mouseAim');
-  const navigate = useNavigate();
 
   const handleTargetClick = () => {
     setPosition(getRandomPosition());
@@ -33,11 +32,6 @@ const AimArea = () => {
       setReactionTime(rt);
       setIsActive(false);
     }
-  };
-
-  const saveScore = () => {
-    addResult(reactionTime);
-    navigate('/dashboard');
   };
 
   const startBenchmark = () => {
@@ -64,13 +58,9 @@ const AimArea = () => {
           </div>
         </>
       ) : reactionTime != null ? (
-        <div className="flex gap-8 flex-col">
-          <h3 className="text-3xl">{reactionTime}ms</h3>
-          <div className="flex gap-4 justify-center">
-            <Button handleClick={saveScore}>Save score</Button>
-            <Button handleClick={startBenchmark}>Try again</Button>
-          </div>
-        </div>
+        <TestFinished result={reactionTime} addResult={addResult} tryAgain={startBenchmark}>
+          <h3 className="text-3xl">Your average reaction time was {reactionTime}ms</h3>
+        </TestFinished>
       ) : (
         <Button handleClick={startBenchmark}>Start benchmark</Button>
       )}

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import Button from '../../ui/Button';
 import { useNavigate } from 'react-router';
 import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
+import TestFinished from '../../components/TestFinished';
 
 const ClickBox = () => {
   const [testActive, setTestActive] = useState(false);
@@ -13,7 +14,6 @@ const ClickBox = () => {
   const startTime = useRef(null);
   const timeoutId = useRef(null);
   const results = useRef([]);
-  const navigate = useNavigate();
   const [reactionHistory, addResult, clearHistory] = useLocalStorageArray('reactionTime');
 
   const getBoxClass = () => {
@@ -22,9 +22,12 @@ const ClickBox = () => {
     return 'bg-red-600';
   };
 
-  const saveScore = () => {
-    addResult(average);
-    navigate('/dashboard');
+  const restart = () => {
+    setSessionComplete(false);
+    setAverage();
+    setReactionTime(null);
+    setAverage(null);
+    results.current = [];
   };
 
   let heading, subtext, actionArea;
@@ -32,28 +35,26 @@ const ClickBox = () => {
   if (sessionComplete) {
     heading = `${average}ms`;
     subtext = 'Save your score or try again!';
-    actionArea = (
-      <div className="flex gap-4 justify-center mt-8">
-        <Button handleClick={saveScore}>Save score</Button>
-        <Button>Try again</Button>
-      </div>
-    );
   } else if (redClick) {
     heading = 'Too fast!';
     subtext = 'Wait for green. Click to try again.';
-    actionArea = null;
   } else if (reactionTime) {
     heading = `${reactionTime}ms`;
     subtext = 'Click to try again';
-    actionArea = null;
   } else {
     heading = 'Reaction time test';
     subtext = 'Click as fast as possible when this box turns green. Click anywhere to start';
-    actionArea = null;
   }
 
   let boxContent;
-  if (!testActive) {
+  if (sessionComplete) {
+    boxContent = (
+      <TestFinished addResult={addResult} result={average} tryAgain={restart}>
+        <h3 className="text-5xl mb-8">{heading}</h3>
+        <p className="text-2xl">{subtext}</p>
+      </TestFinished>
+    );
+  } else if (!testActive) {
     boxContent = (
       <div className="text-center">
         <h3 className="text-5xl mb-8">{heading}</h3>
@@ -61,11 +62,12 @@ const ClickBox = () => {
         {actionArea && actionArea}
       </div>
     );
-  } else if (isGreen) {
-    boxContent = <h3>CLICK NOW</h3>;
   } else {
-    boxContent = <h3>Wait for green...</h3>;
+    boxContent = <h3>{isGreen ? 'CLICK NOW' : 'Wait for green...'}</h3>;
   }
+  // else {
+  //   boxContent = <h3>Wait for green...</h3>;
+  // }
 
   const handleBoxClick = () => {
     if (!testActive || redClick) {
