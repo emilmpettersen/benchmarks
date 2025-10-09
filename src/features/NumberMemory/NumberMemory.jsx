@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
-import Button from '../../ui/Button';
-import Timer from './Timer';
 import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
 import TestFinished from '../../components/TestFinished';
+import NumberDisplay from './components/NumberDisplay';
+import NumberInput from './components/NumberInput';
+import StartScreen from './components/StartScreen';
 
 const NumberMemory = () => {
   const [isActive, setIsActive] = useState(false);
@@ -54,31 +55,15 @@ const NumberMemory = () => {
   return (
     <div className="flex w-full h-[80dvh] bg-sky-800 justify-center items-center flex-col gap-4">
       {isActive && numberVisible ? (
-        <>
-          <h1 className="text-5xl select-none pointer-events-none">{currentNumberRef.current}</h1>
-          <Timer duration={timerDuration} />
-        </>
+        <NumberDisplay currentNumberRef={currentNumberRef} timerDuration={timerDuration} />
       ) : isActive && !numberVisible ? (
-        <form onSubmit={checkNumber}>
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onPaste={(e) => e.preventDefault()}
-            autoFocus
-            className="p-4 border-sky-800 border-2 bg-sky-600 rounded-lg text-3xl"
-          />
-        </form>
+        <NumberInput onSubmit={checkNumber} userInput={userInput} setUserInput={setUserInput} />
       ) : roundRef.current > 0 ? (
         <TestFinished result={score} tryAgain={startTest} addResult={addResult}>
           <h1 className="text-3xl">You remembered {score} digits</h1>
         </TestFinished>
       ) : (
-        <>
-          <h1 className="text-3xl ">How many numbers can you remember?</h1>
-          <p>Each round will add another digit for you to remember.</p>
-          <Button handleClick={startTest}>Start</Button>
-        </>
+        <StartScreen onStart={startTest} />
       )}
     </div>
   );
