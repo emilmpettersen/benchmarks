@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import Target from './Target';
-import Button from '../../ui/Button';
-import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
-import TestFinished from '../../components/TestFinished';
+import Button from '../../../ui/Button';
+import { useLocalStorageArray } from '../../../utility/useLocalStorageArray';
+import TestFinished from '../../../components/TestFinished';
 
 const getRandomPosition = () => {
   const horizontalMax = 800;
@@ -46,7 +46,7 @@ const AimArea = () => {
 
   return (
     <div
-      className={`flex justify-center w-full h-[80dvh] bg-slate-400 flex-col text-center ${!isActive ? 'items-center' : ''} `}
+      className={`flex justify-center w-full h-[80dvh] bg-sky-800 flex-col text-center ${!isActive ? 'items-center' : ''} `}
     >
       {isActive ? (
         <>

@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
-import Button from '../../ui/Button';
+import Button from '../../../ui/Button';
 import { useNavigate } from 'react-router';
-import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
-import TestFinished from '../../components/TestFinished';
+import { useLocalStorageArray } from '../../../utility/useLocalStorageArray';
+import TestFinished from '../../../components/TestFinished';
 
 const ClickBox = () => {
   const [testActive, setTestActive] = useState(false);

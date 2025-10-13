@@ -7,12 +7,15 @@ const Dashboard = (props) => {
   const [mouseAim, addMouseAim, clearMouseAimHistory] = useLocalStorageArray('mouseAim');
   const [numberMemory, addNumberMemory, clearNumberMemoryHistory] =
     useLocalStorageArray('numberMemory');
+  const [verbalMemory, addVerbalMemory, clearVerbalMemoryHistory] =
+    useLocalStorageArray('verbalMemory');
 
   return (
     <div>
       <div>Reaction time: {reactionTime.join(', ')}</div>
       <div>Mouse aim: {mouseAim.join(', ')}</div>
       <div>Number memory: {numberMemory.join(', ')}</div>
+      <div>Verbal memory: {verbalMemory.join(', ')}</div>
     </div>
   );
 };

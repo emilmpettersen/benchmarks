@@ -3,7 +3,7 @@ import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
 import TestFinished from '../../components/TestFinished';
 import NumberDisplay from './components/NumberDisplay';
 import NumberInput from './components/NumberInput';
-import StartScreen from './components/StartScreen';
+import StartScreen from '../../components/StartScreen';
 
 const NumberMemory = () => {
   const [isActive, setIsActive] = useState(false);
@@ -63,7 +63,10 @@ const NumberMemory = () => {
           <h1 className="text-3xl">You remembered {score} digits</h1>
         </TestFinished>
       ) : (
-        <StartScreen onStart={startTest} />
+        <StartScreen onStart={startTest}>
+          <h1 className="text-3xl ">How many numbers can you remember?</h1>
+          <p>Each round will add another digit for you to remember.</p>
+        </StartScreen>
       )}
     </div>
   );

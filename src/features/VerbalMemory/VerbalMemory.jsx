@@ -1,20 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import words from '../../assets/data/words.json';
 import Button from '../../ui/Button';
+import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
+import StartScreen from '../../components/StartScreen';
+import TestFinished from '../../components/TestFinished';
 const VerbalMemory = () => {
   const [currentWord, setCurrentWord] = useState('');
+  const [isActive, setIsActive] = useState(false);
+  const [sessionComplete, setSessionComplete] = useState(false);
   const [score, setScore] = useState(0);
   const seenWords = useRef(new Set());
   const activeWordsRef = useRef([]);
   const wordList = words.words;
   const newWordsCount = 20;
-  console.log(wordList);
+  const [verbMemHistory, addResult, clearHistory] = useLocalStorageArray('verbalMemory');
 
   const addActiveWords = () => {
     for (let i = 0; i < newWordsCount; i++) {
       activeWordsRef.current.push(getRandomWord());
     }
-    console.log(activeWordsRef.current);
   };
 
   const getRandomWord = () => {
@@ -23,48 +27,71 @@ const VerbalMemory = () => {
 
   const startTest = () => {
     setCurrentWord(getRandomActiveWord());
+    setScore(0);
+    seenWords.current.clear();
+    activeWordsRef.current = [];
+    addActiveWords();
+    setSessionComplete(false);
+    setIsActive(true);
   };
 
   const getRandomActiveWord = () => {
     return activeWordsRef.current[Math.floor(Math.random() * activeWordsRef.current.length)];
   };
 
+  const gameOver = () => {
+    setSessionComplete(true);
+  };
+
   useEffect(() => {
-    addActiveWords();
-  }, []);
+    if (score === 0 || score % 10 === 0) addActiveWords();
+  }, [score]);
 
   const handleNew = () => {
-    if (isNew()) {
+    if (isWordNew()) {
       seenWords.current.add(currentWord);
       setScore((prev) => prev + 1);
       setCurrentWord(getRandomActiveWord());
     } else {
-      alert('incorrect');
+      gameOver();
     }
   };
 
   const handleDuplicate = () => {
-    if (!isNew()) {
+    if (!isWordNew()) {
       setScore((prev) => prev + 1);
       setCurrentWord(getRandomActiveWord());
     } else {
-      alert('incorrect');
+      gameOver();
     }
   };
 
-  const isNew = () => {
+  const isWordNew = () => {
     return !seenWords.current.has(currentWord);
   };
 
   return (
-    <div>
-      <Button handleClick={startTest}>Start test</Button>
-      <div>
-        {currentWord} - {score}
-      </div>
-
-      <Button handleClick={handleNew}>New</Button>
-      <Button handleClick={handleDuplicate}>Duplicate</Button>
+    <div className="flex w-full h-[80dvh] bg-sky-800 justify-center items-center flex-col gap-4">
+      {sessionComplete ? (
+        <TestFinished result={score} tryAgain={startTest} addResult={addResult}>
+          <h1 className="text-3xl">You remembered correctly {score} times</h1>
+        </TestFinished>
+      ) : !isActive ? (
+        <StartScreen onStart={startTest}>
+          <h1 className="text-3xl ">How many words can you remember?</h1>
+          <p>Decide whether each word is new or one you've seen before.</p>
+        </StartScreen>
+      ) : (
+        <>
+          <div>
+            {currentWord} - {score}
+          </div>
+          <div className="flex gap-4">
+            <Button handleClick={handleNew}>New</Button>
+            <Button handleClick={handleDuplicate}>Seen</Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

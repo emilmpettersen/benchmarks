@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ClickBox from './ClickBox';
+import ClickBox from './components/ClickBox';
 
 function ReactionTime() {
   return (
