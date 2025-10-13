@@ -36,7 +36,15 @@ const VerbalMemory = () => {
   };
 
   const getRandomActiveWord = () => {
-    return activeWordsRef.current[Math.floor(Math.random() * activeWordsRef.current.length)];
+    if (activeWordsRef.current.length <= 1) return currentWord;
+    const newActiveWord =
+      activeWordsRef.current[Math.floor(Math.random() * activeWordsRef.current.length)];
+
+    if (newActiveWord === currentWord) {
+      return getRandomActiveWord();
+    } else {
+      return newActiveWord;
+    }
   };
 
   const gameOver = () => {
@@ -84,7 +92,7 @@ const VerbalMemory = () => {
       ) : (
         <>
           <div>
-            {currentWord} - {score}
+            <h1 className="text-3xl">{currentWord}</h1>
           </div>
           <div className="flex gap-4">
             <Button handleClick={handleNew}>New</Button>
