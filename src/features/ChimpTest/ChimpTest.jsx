@@ -57,7 +57,7 @@ const ChimpTest = () => {
 
       setTimeout(() => {
         setShowRedFlash(false); // <-- Hide it after a short delay
-      }, 200); // Flash duration
+      }, 300); // Flash duration
 
       if (lives.current > 1) {
         lives.current--;
@@ -90,7 +90,7 @@ const ChimpTest = () => {
             </div>
           </StartScreen>
         ) : !gameOver ? (
-          <div className={`grid grid-cols-${boardX} gap-1`}>
+          <div className={`grid grid-cols-8 gap-1`}>
             {Array.from({ length: totalCells }, (_, i) => (
               <div
                 onClick={
