@@ -9,6 +9,7 @@ const Dashboard = (props) => {
     useLocalStorageArray('numberMemory');
   const [verbalMemory, addVerbalMemory, clearVerbalMemoryHistory] =
     useLocalStorageArray('verbalMemory');
+  const [chimpTest, addChimpTest, clearChimpTestHistory] = useLocalStorageArray('chimpTest');
 
   return (
     <div>
@@ -16,6 +17,7 @@ const Dashboard = (props) => {
       <div>Mouse aim: {mouseAim.join(', ')}</div>
       <div>Number memory: {numberMemory.join(', ')}</div>
       <div>Verbal memory: {verbalMemory.join(', ')}</div>
+      <div>Chimp test: {chimpTest.join(', ')}</div>
     </div>
   );
 };

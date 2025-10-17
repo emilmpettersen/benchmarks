@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import TestFinished from '../../components/TestFinished';
 import StartScreen from '../../components/StartScreen';
 import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
+import LifeCounter from './components/LifeCounter';
 
 const ChimpTest = () => {
   // 5x8 board
@@ -12,7 +13,7 @@ const ChimpTest = () => {
   const [digitsCount, setDigitsCount] = useState(5);
   const [isActive, setIsActive] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const lives = useRef(3);
+  const [lives, setLives] = useState(3);
   const [numberedCells, setNumberedCells] = useState({});
 
   const [chimpTestHistory, addResult, clearHistory] = useLocalStorageArray('chimpTest');
@@ -37,7 +38,7 @@ const ChimpTest = () => {
 
   const startTest = () => {
     setIsActive(true);
-    lives.current = 3;
+    setLives(3);
     setCurrentTargetNumber(1);
     setDigitsCount(5);
     generateRandomCells();
@@ -53,17 +54,23 @@ const ChimpTest = () => {
         delete numberedCells[index];
       }
     } else {
-      setShowRedFlash(true); // <-- Trigger the flash
+      handleIncorrectClick();
+    }
+  };
 
-      setTimeout(() => {
-        setShowRedFlash(false); // <-- Hide it after a short delay
-      }, 300); // Flash duration
+  const handleIncorrectClick = () => {
+    setShowRedFlash(true); // <-- Trigger the flash
 
-      if (lives.current > 1) {
-        lives.current--;
-      } else {
-        setGameOver(true);
-      }
+    setTimeout(() => {
+      setShowRedFlash(false); // <-- Hide it after a short delay
+    }, 300); // Flash duration
+
+    if (lives > 1) {
+      setLives((lives) => lives - 1);
+      setCurrentTargetNumber(1);
+      generateRandomCells();
+    } else {
+      setGameOver(true);
     }
   };
 
@@ -90,19 +97,22 @@ const ChimpTest = () => {
             </div>
           </StartScreen>
         ) : !gameOver ? (
-          <div className={`grid grid-cols-8 gap-1`}>
-            {Array.from({ length: totalCells }, (_, i) => (
-              <div
-                onClick={
-                  numberedCells[i] ? () => handleNumberedCellClick(numberedCells[i], i) : null
-                }
-                key={i}
-                className={`w-20 h-20 ${numberedCells[i] && 'border-2'} border-gray-200 flex items-center justify-center rounded text-xl font-bold ${!numbersVisible && numberedCells[i] ? 'bg-gray-200' : ''}`}
-              >
-                {numberedCells[i] && numbersVisible ? numberedCells[i] : ''}
-              </div>
-            ))}
-          </div>
+          <>
+            <div className={`grid grid-cols-8 gap-1`}>
+              {Array.from({ length: totalCells }, (_, i) => (
+                <div
+                  onClick={
+                    numberedCells[i] ? () => handleNumberedCellClick(numberedCells[i], i) : null
+                  }
+                  key={i}
+                  className={`w-20 h-20 ${numberedCells[i] && 'border-2'} border-gray-200 flex items-center justify-center rounded text-xl font-bold ${!numbersVisible && numberedCells[i] ? 'bg-gray-200' : ''}`}
+                >
+                  {numberedCells[i] && numbersVisible ? numberedCells[i] : ''}
+                </div>
+              ))}
+            </div>
+            <LifeCounter lives={lives}>test</LifeCounter>
+          </>
         ) : (
           <TestFinished result={digitsCount} tryAgain={startTest} addResult={addResult}>
             <h1>You scored {digitsCount}</h1>
