@@ -17,7 +17,7 @@ const ClickBox = () => {
   const [reactionHistory, addResult, clearHistory] = useLocalStorageArray('reactionTime');
 
   const getBoxClass = () => {
-    if (!testActive) return 'bg-blue-500';
+    if (!testActive) return 'bg-sky-800';
     if (isGreen) return 'bg-green-500';
     return 'bg-red-600';
   };

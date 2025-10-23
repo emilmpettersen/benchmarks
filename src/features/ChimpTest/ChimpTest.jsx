@@ -105,7 +105,7 @@ const ChimpTest = () => {
                     numberedCells[i] ? () => handleNumberedCellClick(numberedCells[i], i) : null
                   }
                   key={i}
-                  className={`w-20 h-20 ${numberedCells[i] && 'border-2'} border-gray-200 flex items-center justify-center rounded text-xl font-bold ${!numbersVisible && numberedCells[i] ? 'bg-gray-200' : ''}`}
+                  className={`w-20 h-20 ${numberedCells[i] ? 'border-2 hover:cursor-pointer' : ''} border-gray-200 flex items-center justify-center rounded text-xl font-bold ${!numbersVisible && numberedCells[i] ? 'bg-gray-200' : ''}`}
                 >
                   {numberedCells[i] && numbersVisible ? numberedCells[i] : ''}
                 </div>
