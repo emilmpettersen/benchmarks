@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 function App() {
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-4 p-6">
       <Link
         className="p-5 bg-teal-100 border-4 border-teal-200 rounded-lg text-center text-slate-700"
         to={'/reactiontime'}
