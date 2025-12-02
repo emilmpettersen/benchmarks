@@ -3,27 +3,23 @@ import books from '../../assets/data/bookExcerpts.json';
 
 const TypingSpeed = () => {
   const [excerpt, setExcerpt] = useState(books[Math.floor(Math.random() * books.length)].excerpt);
-  const comparableExcerpt = excerpt.replaceAll('\n', '');
-  const [spelled, setSpelled] = useState('');
+  const splitExcerpt = excerpt.split('');
+  const [spelled, setSpelled] = useState([]);
+  const [correctCharactersCount, setCorrectCharactersCount] = useState(0);
+  const incorrectCharactersCount = spelled.length - correctCharactersCount;
 
   const handleKeyDown = useCallback((event) => {
     const pressedKey = event.key;
-    if (pressedKey === 'Backspace') {
-      setSpelled((prev) => prev.slice(0, -1));
-    }
-    if (!/^[a-zA-Z-'"" ",.]$/.test(pressedKey)) return;
-    if (pressedKey === "'") {
-      event.preventDefault();
-    }
-    setSpelled((prev) => prev + pressedKey);
-    /* setWordProgress((prevProgress) => {
-      if (pressedKey === prevProgress[0]) {
-        setSpelled((prev) => prev + pressedKey);
-        return prevProgress.slice(1);
-      } else {
-        return prevProgress;
+    setSpelled((prev) => {
+      if (pressedKey === 'Backspace' && prev.length > 0) {
+        return prev.slice(0, -1);
       }
-    }); */
+      if (!/^[a-zA-Z-'"" ",.]$/.test(pressedKey)) return prev;
+      if (pressedKey === "'") {
+        event.preventDefault();
+      }
+      return [...prev, pressedKey];
+    });
   }, []);
 
   useEffect(() => {
@@ -34,8 +30,12 @@ const TypingSpeed = () => {
   }, []);
 
   useEffect(() => {
-    console.log(spelled[spelled.length - 1] === comparableExcerpt[spelled.length - 1]);
-  }, [spelled]);
+    let correct = 0;
+    for (let i = 0; i < spelled.length; i++) {
+      if (spelled[i] === splitExcerpt[i]) correct++;
+    }
+    setCorrectCharactersCount(correct);
+  }, [spelled, excerpt]);
 
   const getRandomExcerpt = () => {
     setExcerpt(books[Math.floor(Math.random() * books.length)].excerpt);
@@ -43,15 +43,54 @@ const TypingSpeed = () => {
 
   return (
     <div className="max-w-[1024px] m-auto pointer-events-none select-none">
-      {spelled}
       <p>
-        {excerpt.split('\n').map((line, j) => (
+        {/* {spelled.map((letter, index) => (
+          <span
+            className={spelled[index] === splitExcerpt[index] ? 'text-green-400' : 'text-red-400'}
+          >
+            {letter}
+          </span>
+        ))} */}
+        {/* {excerpt.split('\n').map((line, j) => (
           <React.Fragment key={j}>
             {line}
             <br />
           </React.Fragment>
+        ))} */}
+        {splitExcerpt.map((letter, index) => (
+          <span
+            className={`${index === spelled.length ? 'underline ' : ''} ${
+              splitExcerpt[index] === spelled[index] && index <= spelled.length
+                ? 'text-green-400 '
+                : spelled[index] != undefined
+                  ? 'text-red-400 '
+                  : ''
+            }`}
+          >
+            {letter}
+          </span>
         ))}
       </p>
+      <br></br>
+      <br></br>
+      <br></br>
+      Paragraph length: {splitExcerpt.length}
+      <br></br>
+      <br></br>
+      <br></br>
+      Spelled: {spelled.length}
+      <br></br>
+      <br></br>
+      <br></br>
+      Incorrect characters: {incorrectCharactersCount}
+      <br></br>
+      <br></br>
+      <br></br>
+      Correct characters: {correctCharactersCount}
+      <br></br>
+      <br></br>
+      <br></br>
+      Accuracy: {((correctCharactersCount / spelled.length) * 100).toFixed(2)}%
     </div>
   );
 };
