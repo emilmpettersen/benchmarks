@@ -106,7 +106,7 @@ const ClickBox = () => {
   return (
     <div
       onClick={sessionComplete ? undefined : handleBoxClick}
-      className={`h-[70dvh] ${getBoxClass()} flex justify-center items-center`}
+      className={`h-[80dvh] ${getBoxClass()} flex justify-center items-center`}
     >
       {boxContent}
     </div>
