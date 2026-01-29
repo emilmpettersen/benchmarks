@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+EXECUTIVE_SUMMARY.md
+PROJECT_PLAN.md

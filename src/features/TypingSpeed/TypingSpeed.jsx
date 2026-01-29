@@ -16,6 +16,24 @@ const TypingSpeed = () => {
   const [result, setResult] = useState(0);
   const startTimeRef = useRef(null);
   const [typingSpeedHistory, addResult, clearHistory] = useLocalStorageArray('typingSpeed');
+  const wordRanges = React.useMemo(() => {
+    const ranges = [];
+    let start = 0;
+
+    for (let i = 0; i <= splitExcerpt.length; i++) {
+      if (splitExcerpt[i] === ' ' || i === splitExcerpt.length) {
+        ranges.push({ start, end: i - 1 });
+        start = i + 1;
+      }
+    }
+
+    return ranges;
+  }, [excerpt]);
+  const caretIndex = spelled.length;
+
+  const currentWordIndex = wordRanges.findIndex(
+    ({ start, end }) => caretIndex >= start && caretIndex <= end + 1,
+  );
 
   const handleKeyDown = useCallback((event) => {
     const pressedKey = event.key;
@@ -53,12 +71,10 @@ const TypingSpeed = () => {
     const accuracy = correctCharactersCount / spelled.length;
     rawWPMRef.current = calculateWPM(spelled.length, startTimeRef.current, finishTime);
     setResult(Math.round(rawWPMRef.current * accuracy));
-    console.log(result);
   };
 
   const calculateWPM = (characters, startTime, finishTime) => {
     const minutes = (finishTime - startTime) / 60000;
-    console.log(characters + ' ' + startTime + ' ' + finishTime);
     return Math.round(characters / 5 / minutes);
   };
 
@@ -68,10 +84,10 @@ const TypingSpeed = () => {
 
   const startTest = () => {
     getRandomExcerpt();
+    setTestComplete(false);
     setTestActive(true);
     setSpelled([]);
     startTimeRef.current = Date.now();
-    console.log(startTimeRef.current);
   };
 
   return (
@@ -92,20 +108,28 @@ const TypingSpeed = () => {
         </TestFinished>
       ) : (
         <div className="max-w-[1024px]">
-          {splitExcerpt.map((letter, index) => (
-            <span
-              key={index}
-              className={`${index === spelled.length ? 'underline ' : ''} ${
-                splitExcerpt[index] === spelled[index] && index <= spelled.length
-                  ? 'text-green-400 '
-                  : spelled[index] != undefined
-                    ? 'text-red-400 '
-                    : 'opacity-50'
-              }`}
-            >
-              {letter}
-            </span>
-          ))}
+          {splitExcerpt.map((letter, index) => {
+            const isCurrentWord =
+              currentWordIndex !== -1 &&
+              index >= wordRanges[currentWordIndex].start &&
+              index <= wordRanges[currentWordIndex].end;
+            return (
+              <span
+                key={index}
+                className={`transition-opacity ${index === spelled.length ? 'underline ' : ''} 
+                ${
+                  splitExcerpt[index] === spelled[index] && index <= spelled.length
+                    ? 'text-green-400 '
+                    : spelled[index] != undefined
+                      ? 'text-red-400 '
+                      : ''
+                }
+                ${isCurrentWord ? 'opacity-100' : 'opacity-50'}`}
+              >
+                {letter}
+              </span>
+            );
+          })}
         </div>
       )}
     </div>
