@@ -3,6 +3,7 @@ import Target from './Target';
 import Button from '../../../ui/Button';
 import { useLocalStorageArray } from '../../../utility/useLocalStorageArray';
 import TestFinished from '../../../components/TestFinished';
+import StartScreen from '../../../components/StartScreen';
 
 const getRandomPosition = () => {
   const horizontalMax = 800;
@@ -46,7 +47,7 @@ const AimArea = () => {
 
   return (
     <div
-      className={`flex justify-center w-full h-[80dvh] bg-sky-800 flex-col text-center ${!isActive ? 'items-center' : ''} `}
+      className={`flex justify-center w-full h-[80dvh] bg-sky-800 flex-col text-center ${!isActive ? 'items-center gap-4' : ''} `}
     >
       {isActive ? (
         <>
@@ -62,7 +63,10 @@ const AimArea = () => {
           <h3 className="text-3xl">Your average reaction time was {reactionTime}ms</h3>
         </TestFinished>
       ) : (
-        <Button handleClick={startBenchmark}>Start benchmark</Button>
+        <StartScreen onStart={startBenchmark}>
+          <h1 className="text-3xl ">How fast can you click the targets?</h1>
+          <p>Click the targets as fast as you can.</p>
+        </StartScreen>
       )}
     </div>
   );
