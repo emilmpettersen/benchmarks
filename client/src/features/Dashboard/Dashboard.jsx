@@ -133,7 +133,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="w-full bg-slate-700 p-6 min-h-screen">
+    <div className="w-full p-6 min-h-screen">
       <h1 className="text-4xl font-bold mb-8">Dashboard</h1>
 
       {/* Statistics Summary */}
