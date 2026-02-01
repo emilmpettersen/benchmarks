@@ -16,7 +16,7 @@ const ChimpTest = () => {
   const [lives, setLives] = useState(3);
   const [numberedCells, setNumberedCells] = useState({});
 
-  const [chimpTestHistory, addResult, clearHistory] = useLocalStorageArray('chimpTest');
+  const { add: addResult } = useLocalStorageArray('chimpTest');
 
   const [showRedFlash, setShowRedFlash] = useState(false);
 

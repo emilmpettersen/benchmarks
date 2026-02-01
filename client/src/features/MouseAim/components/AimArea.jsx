@@ -21,7 +21,7 @@ const AimArea = () => {
   const [reactionTime, setReactionTime] = useState(null);
   const startTime = useRef(null);
   const totalTargets = 30;
-  const [aimHistory, addResult, clearHistory] = useLocalStorageArray('mouseAim');
+  const { data: aimHistory, add: addResult } = useLocalStorageArray('mouseAim');
 
   const handleTargetClick = () => {
     setPosition(getRandomPosition());

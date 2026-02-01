@@ -13,7 +13,7 @@ const NumberMemory = () => {
   const roundRef = useRef(0);
   const score = roundRef.current - 1;
   const timerDuration = 5000;
-  const [numberHistory, addResult, clearHistory] = useLocalStorageArray('numberMemory');
+  const { data: numberHistory, add: addResult } = useLocalStorageArray('numberMemory');
 
   const startTest = () => {
     roundRef.current = 0;

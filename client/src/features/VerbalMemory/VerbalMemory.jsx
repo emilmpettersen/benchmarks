@@ -13,7 +13,7 @@ const VerbalMemory = () => {
   const activeWordsRef = useRef([]);
   const wordList = words.words;
   const newWordsCount = 20;
-  const [verbMemHistory, addResult, clearHistory] = useLocalStorageArray('verbalMemory');
+  const { data: verbMemHistory, add: addResult } = useLocalStorageArray('verbalMemory');
 
   const addActiveWords = () => {
     for (let i = 0; i < newWordsCount; i++) {

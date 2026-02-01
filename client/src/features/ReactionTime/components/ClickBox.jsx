@@ -14,7 +14,7 @@ const ClickBox = () => {
   const startTime = useRef(null);
   const timeoutId = useRef(null);
   const results = useRef([]);
-  const [reactionHistory, addResult, clearHistory] = useLocalStorageArray('reactionTime');
+  const { data: reactionHistory, add: addResult } = useLocalStorageArray('reactionTime');
 
   const getBoxClass = () => {
     if (!testActive) return 'bg-sky-800';

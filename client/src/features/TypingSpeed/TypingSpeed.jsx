@@ -15,7 +15,7 @@ const TypingSpeed = () => {
   const rawWPMRef = useRef();
   const [result, setResult] = useState(0);
   const startTimeRef = useRef(null);
-  const [typingSpeedHistory, addResult, clearHistory] = useLocalStorageArray('typingSpeed');
+  const { data: typingSpeedHistory, add: addResult } = useLocalStorageArray('typingSpeed');
   const wordRanges = React.useMemo(() => {
     const ranges = [];
     let start = 0;

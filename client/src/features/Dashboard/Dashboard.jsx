@@ -19,12 +19,12 @@ import {
 import { useLocalStorageArray } from '../../utility/useLocalStorageArray';
 
 const Dashboard = () => {
-  const [reactionTime] = useLocalStorageArray('reactionTime');
-  const [mouseAim] = useLocalStorageArray('mouseAim');
-  const [numberMemory] = useLocalStorageArray('numberMemory');
-  const [verbalMemory] = useLocalStorageArray('verbalMemory');
-  const [chimpTest] = useLocalStorageArray('chimpTest');
-  const [typingSpeed] = useLocalStorageArray('typingSpeed');
+  const { data: reactionTime } = useLocalStorageArray('reactionTime');
+  const { data: mouseAim } = useLocalStorageArray('mouseAim');
+  const { data: numberMemory } = useLocalStorageArray('numberMemory');
+  const { data: verbalMemory } = useLocalStorageArray('verbalMemory');
+  const { data: chimpTest } = useLocalStorageArray('chimpTest');
+  const { data: typingSpeed } = useLocalStorageArray('typingSpeed');
 
   // Calculate statistics for all tests
   // For time-based tests (reactionTime, mouseAim), lower is better

@@ -14,5 +14,9 @@ export function useLocalStorageArray(key, initialValue = []) {
 
   const clearArray = useCallback(() => setArray([]), []);
 
-  return [array, addItem, clearArray];
+  return {
+    data: array,
+    add: addItem,
+    clear: clearArray,
+  };
 }
